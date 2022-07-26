@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEM</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <!-- <div> -->
+        <!--  Success -->
+        <!-- <div class="toast toast--success"> -->
+            <!-- <div class="toast__icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="toast__body">
+                <h3 class="toast__title">Success</h3>
+                <p class="toast__msg">Các bạn subscribe kênh Youtube F8 Official để nhận thông báo khi có các bài học mới nhé ❤️</p>
+            </div>
+            <div class="toast__close">
+                <i class="fas fa-times"></i>
+            </div>
+        </div> -->
+
+         <!--  Info -->
+         <!-- <div class="toast toast--info">
+            <div class="toast__icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="toast__body">
+                <h3 class="toast__title">Info</h3>
+                <p class="toast__msg">Các bạn subscribe kênh Youtube F8 Official để nhận thông báo khi có các bài học mới nhé ❤️</p>
+            </div>
+            <div class="toast__close">
+                <i class="fas fa-times"></i>
+            </div>
+        </div> -->
+
+         <!--  Warn -->
+         <!-- <div class="toast toast--warn">
+            <div class="toast__icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="toast__body">
+                <h3 class="toast__title">Warn</h3>
+                <p class="toast__msg">Các bạn subscribe kênh Youtube F8 Official để nhận thông báo khi có các bài học mới nhé ❤️</p>
+            </div>
+            <div class="toast__close">
+                <i class="fas fa-times"></i>
+            </div>
+        </div> -->
+
+         <!--  Error -->
+         <!-- <div class="toast toast--error">
+            <div class="toast__icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="toast__body">
+                <h3 class="toast__title">Error</h3>
+                <p class="toast__msg">Các bạn subscribe kênh Youtube F8 Official để nhận thông báo khi có các bài học mới nhé ❤️</p>
+            </div>
+            <div class="toast__close">
+                <i class="fas fa-times"></i>
+            </div>
+        </div> -->
+    <!-- </div> -->
+
+    <div id="toast">
+        <!-- <div class="toast toast--success">
+            <div class="toast__icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="toast__body">
+                <h3 class="toast__title">Success</h3>
+                <p class="toast__msg">Các bạn subscribe kênh Youtube F8 Official để nhận thông báo khi có các bài học mới nhé ❤️</p>
+            </div>
+            <div class="toast__close">
+                <i class="fas fa-times"></i>
+            </div>
+        </div> -->
+    </div>
+
+    <div>
+        <div onclick="showSuccessToast();" class="btn btn--success">Show Success Toast</div>
+        <div onclick="showErrorToast();" class="btn btn--danger">Show danger Toast</div>
+    </div>
+   
+
+    <script>
+
+        // Function Show Toast
+        function toast({
+            title = '',
+            message = '',
+            type = '',
+            duration = 3000
+        }) {
+            const main = document.getElementById('toast');
+            if(main){
+                const toast = document.createElement('div');
+
+                // auto remove set timeout
+                const autoRemoveId = setTimeout(function(){
+                    main.removeChild(toast);
+                }, duration + 1000);
+
+                // remove when click
+                toast.onclick = function(event){
+                    if(event.target.closest('.toast__close')){
+                        main.removeChild(toast);
+                        clearTimeout(autoRemoveId);
+                    }
+                }
+
+                const icons = {
+                    success: 'fa-solid fa-circle-check',
+                    info: 'fa-solid fa-circle-info',
+                    warning: 'fa-solid fa-circle-exclamation',
+                    error: 'fa-solid fa-circle-exclamation' 
+                }
+                const delay = (duration / 1000).toFixed(2);
+                const icon = icons[type];
+                toast.classList.add('toast', `toast--${type}`);
+                toast.style.animation = `slideInLeft ease .2s, fadeOut linear 1s ${delay}s forwards`;
+                toast.innerHTML = `
+                    <div class="toast__icon">
+                        <i class="${icon}"></i>
+                    </div>
+                    <div class="toast__body">
+                        <h3 class="toast__title">${title}</h3>
+                        <p class="toast__msg">${message}</p>
+                    </div>
+                    <div class="toast__close">
+                        <i class="fas fa-times"></i>
+                    </div>
+                `;
+                main.appendChild(toast);
+            }
+        }
+
+
+        function showSuccessToast(){
+            toast({
+                title: 'Thành công',
+                message: 'Bạn đã thành công!',
+                type: 'success',
+                duration: 5000
+            });
+        }
+        function showErrorToast(){
+            toast({
+                title: 'Thất bại',
+                message: 'Bạn đã thất bại rồi!',
+                type: 'error',
+                duration: 5000
+            });
+        }
+    </script>
+
+
+
+</body>
+</html>
