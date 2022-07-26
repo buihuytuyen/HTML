@@ -112,7 +112,7 @@ var courseApi = 'http://localhost:3000/courses';
 
 function start(){
     getCourse(renderCourses);
-    handleCreateForm();
+    handleCreateOrUpdateFrom();
 }
 
 start();
@@ -160,9 +160,26 @@ function handleDeleteCourse(id){
             response.json(); 
         })
         .then(function(){
+            var courseItem = document.querySelector('.courses-item-' + id);
+            if(courseItem){
+                courseItem.remove();
+            }
             getCourse(renderCourses);
-            
-        })
+        });
+}
+
+function handleUpdateCourse(id){
+
+    var createBtn = document.querySelector('#create');
+    createBtn.textContent = 'Update';
+    createBtn.setAttribute('data-item',id);
+
+    var courseName = document.querySelector('.course-name-' + id).textContent; 
+    var courseDescription = document.querySelector('.course-description-' + id).textContent; 
+
+    document.querySelector('input[name="name"]').value = courseName;
+    document.querySelector('input[name="description"]').value = courseDescription;
+
 }
 
 function renderCourses(courses){
@@ -171,10 +188,11 @@ function renderCourses(courses){
     
     var html = courses.map(function(course){
         return `
-            <li>
-                <h4>${course.name}</h4>
-                <p>${course.description}</p>
+            <li class="course-item-${course.id}">
+                <h4 class="course-name-${course.id}">${course.name}</h4>
+                <p class="course-description-${course.id}">${course.description}</p>
                 <button onclick="handleDeleteCourse(${course.id})">Xóa</button>
+                <button onclick="handleUpdateCourse(${course.id})">Sửa</button>
             </li>
         `;
     });
@@ -182,25 +200,51 @@ function renderCourses(courses){
 }
 
 
-function handleCreateForm(){
+function updateCourse(id, data, callback){
+    var t = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+          },
+        body: JSON.stringify(data)
+    };
+
+    fetch(courseApi + '/' + id, t)
+        .then(function(response){   
+            response.json(); 
+        })
+        .then(callback)
+}
+
+function handleCreateOrUpdateFrom(){
     var createBtn = document.querySelector('#create');
 
 
     createBtn.onclick = function(){
+
         var name = document.querySelector('input[name="name"]').value;
         var description = document.querySelector('input[name="description"]').value;
         
-
-        console.log(name, description);
-
         var formData = {
             name: name,
             description: description
         };
 
-        createCourse(formData,function(){
-            getCourse(renderCourses);
-        });
+        if(createBtn.textContent == 'Create'){
+
+            createCourse(formData,function(){
+                getCourse(renderCourses);
+            });
+        }  else {
+            var id = createBtn.getAttribute('data-item');
+            updateCourse( id,formData, function(){
+                getCourse(renderCourses);
+            });
+            createBtn.textContent = 'Create';
+        }
+
+        document.querySelector('input[name="name"]').value = '';
+        document.querySelector('input[name="description"]').value = '';
     }
 }
 
